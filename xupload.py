@@ -1,17 +1,30 @@
 from multiprocessing import Pool
 import requests
-import sys
+from colorama import Fore
 
-file = input("Where is the file with the URLs  >>  ")
+file = input(Fore.GREEN + "Where is the file with the URLs  >>  " + Fore.RESET)
 try:
     file = open(file, 'r').readlines()
 except:
-    print("Error opening the file!")
+    print(Fore.RED + "Error opening the file!" + Fore.RESET)
     quit()
-save = input("Where do you want to save the output? leave in blank if you don't want to save  >>  ")
+save = input(Fore.GREEN + "Where do you want to save the output? leave in blank if you don't want to save  >>   " + Fore.RESET)
 
+if save != "":
+    try:
+        open(save, 'w').write("")
+    except:
+        print(Fore.RED + "Error!" + Fore.RESET)
+        quit()
 
-open('urls.txt', 'r').readlines()
+try:
+    processes = int(input(Fore.GREEN + "How many processes do you want? (Recomended: 4)  >>  " + Fore.RESET))
+    if processes == "":
+        processes = 4
+except:
+    print(Fore.RED + "Error! the value must be an int" + Fore.RESET)
+    quit()
+
 def requester(url):
     already_printed = False
     url = url.replace("\n", '')
@@ -24,7 +37,7 @@ def requester(url):
                 print(url)
                 already_printed = True
 try:
-    with Pool(processes=4) as pool:
+    with Pool(processes=processes) as pool:
         pool.map(requester, file)
 except:
     pass
